@@ -3,9 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kd_utils/api_service/api_enum.dart';
-import 'package:wallpaper/repo/wallpaper_repo.dart';
+import 'package:wallpaper/ui/wallpaper_view/wallpaper_view_page.dart';
 
-import '../database/model/images_model.dart';
+import 'home_page_state.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,21 +14,8 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
-  late HomePageController homePageController;
-  ScrollController pageScrollController = ScrollController();
+class _HomePageState extends HomePageState {
 
-  @override
-  void initState() {
-    homePageController = HomePageController()..loadImage();
-
-    pageScrollController.addListener(() {
-      if (pageScrollController.position.maxScrollExtent == pageScrollController.offset) {
-        homePageController.loadMore();
-      }
-    });
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,11 +45,18 @@ class _HomePageState extends State<HomePage> {
                   ),
                   itemBuilder: (context, index) {
                     final item = controller.data!.photos![index];
-                    return Card(
-                      clipBehavior: Clip.hardEdge,
-                      child: Image.network(
-                        item.src!.portrait!,
-                        fit: BoxFit.cover,
+                    return GestureDetector(
+                      onTap: (){
+                        // print(item.id.runtimeType);
+                        Get.to(()=> WallPagerView(id: item.id!));
+                      },
+                      child: Card(
+                        clipBehavior: Clip.hardEdge,
+
+                        child: Image.network(
+                          item.src!.portrait!,
+                          fit: BoxFit.cover,
+                        ),
                       ),
                     );
                   },
@@ -83,41 +77,3 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class HomePageController extends GetxController {
-  ImagesModel? data;
-  String? error;
-  ApiState apiState = ApiState.loading;
-  ApiState? loadMoreState;
-  String? loadError;
-
-  loadImage() async {
-    await WallPaperRepository.getWallPaparsByCurated(nextPage: 1).then((value) {
-      data = value;
-      apiState = ApiState.success;
-    }).onError((error, stackTrace) {
-      this.error = error.toString();
-      apiState = ApiState.error;
-    });
-    update();
-  }
-
-  loadMore() async {
-    if (data != null) {
-      loadMoreState = ApiState.loading;
-      update();
-
-      await WallPaperRepository.getWallPaparsByCurated(nextPage: data!.page! + 1).then((value) {
-        if (value != null) {
-          data?.page = value.page;
-          data?.photos!.addAll(value.photos!.toList());
-          data?.nextPage = value.nextPage;
-        }
-        loadMoreState = ApiState.success;
-      }).onError((error, stackTrace) {
-        loadError = error.toString();
-        loadMoreState = ApiState.error;
-      });
-      update();
-    }
-  }
-}

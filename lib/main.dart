@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:wallpaper/style/app_theme.dart';
-import 'package:wallpaper/ui/home_page.dart';
+import 'package:wallpaper/ui/home_page/home_page.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

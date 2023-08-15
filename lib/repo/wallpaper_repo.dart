@@ -1,3 +1,4 @@
+import 'package:get/get.dart';
 import 'package:wallpaper/database/model/images_model.dart';
 import 'package:wallpaper/database/network/api/app_api.dart';
 
@@ -16,7 +17,7 @@ class WallPaperRepository {
     });
   }
 
-  static Future<ImagesModel?> getWallPaparsByCurated({int? nextPage}) async {
+  static Future<ImagesModel?> getWallpapersByCurated({int? nextPage}) async {
     int page = nextPage ?? 1;
     Map<String, String> params = {"page": page.toString(), "per_page": "30"};
 
@@ -29,6 +30,16 @@ class WallPaperRepository {
         return result;
       }
     }).onError((error, stackTrace) {
+      throw error!;
+    });
+  }
+
+  static Future<Photos> getWallPaperById(int id)async{
+
+    return await _api.get(url: AppUrls.getPhoto(id)).then((value){
+      final photo = Photos.fromJson(value);
+      return photo;
+    }).onError((error, stackTrace){
       throw error!;
     });
   }
