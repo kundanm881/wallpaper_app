@@ -3,9 +3,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kd_utils/api_service/api_enum.dart';
-import 'package:wallpaper/ui/wallpaper_view/wallpaper_view_page.dart';
+import 'package:wallpaper/style/app_style.dart';
 
+import '../wallpaper_view/wallpaper_view_page.dart';
 import 'home_page_state.dart';
+import 'widgets/drawer.dart';
+import 'widgets/image_card_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,14 +18,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends HomePageState {
-
+  final pageScaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: pageScaffoldKey,
       appBar: AppBar(
-        title: Text("WallPager App"),
+        title: Text(
+          "WallPager App",
+          style: AppStyle.mainAppBar,
+        ),
+        centerTitle: true,
       ),
+      drawer: HomeDrawer(scaffoldKey: pageScaffoldKey),
       body: GetBuilder(
         init: homePageController,
         builder: (controller) {
@@ -45,23 +54,16 @@ class _HomePageState extends HomePageState {
                   ),
                   itemBuilder: (context, index) {
                     final item = controller.data!.photos![index];
-                    return GestureDetector(
-                      onTap: (){
-                        // print(item.id.runtimeType);
-                        Get.to(()=> WallPagerView(id: item.id!));
+                    return ImageCardTile(
+                      item: item,
+                      onClick: () {
+                        Get.to(() => WallPagerView(id: item.id!));
                       },
-                      child: Card(
-                        clipBehavior: Clip.hardEdge,
-
-                        child: Image.network(
-                          item.src!.portrait!,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
                     );
                   },
                 ),
               ),
+              // more Loading
               if (controller.loadMoreState == ApiState.loading)
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -76,4 +78,3 @@ class _HomePageState extends HomePageState {
     );
   }
 }
-

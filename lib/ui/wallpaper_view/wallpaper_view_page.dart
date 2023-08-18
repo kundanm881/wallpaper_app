@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:kd_utils/api_service/api_enum.dart';
 import 'package:wallpaper/database/model/images_model.dart';
-import 'package:wallpaper/database/network/url/app_url.dart';
 import 'package:wallpaper/repo/wallpaper_repo.dart';
 
 class WallPagerView extends StatefulWidget {

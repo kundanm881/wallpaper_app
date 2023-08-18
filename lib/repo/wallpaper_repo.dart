@@ -1,4 +1,4 @@
-import 'package:get/get.dart';
+
 import 'package:wallpaper/database/model/images_model.dart';
 import 'package:wallpaper/database/network/api/app_api.dart';
 
@@ -35,7 +35,6 @@ class WallPaperRepository {
   }
 
   static Future<Photos> getWallPaperById(int id)async{
-
     return await _api.get(url: AppUrls.getPhoto(id)).then((value){
       final photo = Photos.fromJson(value);
       return photo;
