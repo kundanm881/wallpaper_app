@@ -33,6 +33,7 @@ class ImageCardTile extends StatelessWidget {
               bottom: 10,
               right: 10,
               child: KFavBtn(
+                isFav: item.liked!,
                 onPressed: onFavClick
               ),
             )

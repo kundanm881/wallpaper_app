@@ -18,8 +18,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends HomePageState {
-  final pageScaffoldKey = GlobalKey<ScaffoldState>();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,10 +52,15 @@ class _HomePageState extends HomePageState {
                   ),
                   itemBuilder: (context, index) {
                     final item = controller.data!.photos![index];
+                    controller.updateLike(photos: item);
+
                     return ImageCardTile(
                       item: item,
-                      onClick: () {
+                      onClick: () async {
                         Get.to(() => WallPagerView(id: item.id!));
+                      },
+                      onFavClick: () async {
+                        controller.likeAndDislike(photos: item);
                       },
                     );
                   },
