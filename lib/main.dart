@@ -2,11 +2,18 @@
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wallpaper/database/sqlite/app_db.dart';
 import 'package:wallpaper/style/app_theme.dart';
 import 'package:wallpaper/ui/home_page/home_page.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  final db = await AppDb.init;
+
+  db.insertFav();
+
+  print(await db.getFavs());
+
   runApp(const MyApp());
 }
 
