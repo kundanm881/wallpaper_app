@@ -24,7 +24,7 @@ class _HomePageState extends HomePageState {
       key: pageScaffoldKey,
       appBar: AppBar(
         title: Text(
-          "WallPager App",
+          "WallPaper App",
           style: AppStyle.mainAppBar,
         ),
         centerTitle: true,
@@ -57,7 +57,7 @@ class _HomePageState extends HomePageState {
                     return ImageCardTile(
                       item: item,
                       onClick: () async {
-                        Get.to(() => WallPagerView(id: item.id!));
+                        Get.to(() => WallPagerView(photo: item));
                       },
                       onFavClick: () async {
                         controller.likeAndDislike(photos: item);

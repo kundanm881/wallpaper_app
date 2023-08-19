@@ -122,8 +122,10 @@ class AppDb {
       final src =
           await _db!.query(_favSrc, where: "id = ${elv['id']}", limit: 1);
       elv['src'] = src.first;
-
+      elv['liked'] = 1;
+      
       data.add(elv);
+      
     }
     // print(data);
     return data;

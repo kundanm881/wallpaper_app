@@ -1,79 +1,116 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:kd_utils/api_service/api_enum.dart';
-import 'package:wallpaper/database/model/images_model.dart';
-import 'package:wallpaper/repo/wallpaper_repo.dart';
 
+import '../../controllers/fav_controller/fav_controller.dart';
+import '../../database/model/images_model.dart';
 class WallPagerView extends StatefulWidget {
-  const WallPagerView({super.key, required this.id});
-  final int id;
+  const WallPagerView({
+    super.key,
+    required this.photo,
+  });
+  final Photos photo;
 
   @override
   State<WallPagerView> createState() => _WallPagerViewState();
 }
 
 class _WallPagerViewState extends State<WallPagerView> {
-  late WallpaperViewController wallpaperViewController;
+ 
+  late FavController favController;
 
   @override
   void initState() {
-    wallpaperViewController = WallpaperViewController();
-    wallpaperViewController.loadImage(widget.id);
+    favController = Get.find<FavController>();
 
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
-        init: wallpaperViewController,
-        builder: (controller) {
-          if(controller.apiState == ApiState.loading){
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
-          }
-          if(controller.apiState == ApiState.error){
-            return Scaffold(body: Center(child: Text("${controller.error}")));
-          }
-          return Scaffold(
-            // extendBodyBehindAppBar: true,
-            // extendBody: true,
-            appBar: AppBar(
-              backgroundColor: Colors.transparent,
-              title: Text(controller.photo?.photographer ?? ""),
+    return Scaffold(
+      extendBodyBehindAppBar: true,
+      // extendBody: true,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leadingWidth: 60,
+        leading: Center(
+          child: Container(
+            height: 40,
+            width: 40,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(100),
+              color: Colors.grey.shade300,
             ),
-            body: Image.network(
-              controller.photo!.src!.portrait!,
-              height: context.height,
+            child: IconButton(
+              onPressed: () {
+                Get.back();
+              },
+              icon: Icon(
+                Icons.arrow_back,
+              ),
+            ),
+          ),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+              if (widget.photo.liked!) {
+                favController.removeImage(id: widget.photo.id!);
+              } else {
+                favController.addImage(photos: widget.photo);
+              }
+            },
+            icon: GetBuilder(
+              init: favController,
+              builder: (controller) {
+                return Icon(
+                  (widget.photo.liked!)
+                      ? Icons.favorite_rounded
+                      : Icons.favorite_border_rounded,
+                  color: (widget.photo.liked!) ? Colors.red : Colors.white,
+                  size: 28,
+                );
+              },
+            ),
+          ), // download image
+          IconButton(
+            onPressed: () {
+              Get.showSnackbar(GetSnackBar(
+                message: "Comming soon",
+                duration: Duration(seconds: 2),
+                snackPosition: SnackPosition.TOP,
+              ),);
+            },
+            icon: Icon(Icons.download, color: Colors.grey.shade300, size: 28),
+          )
+        ],
+      ),
+      body: Stack(
+        children: [
+          Image.network(
+            widget.photo.src!.portrait!,
+            height: context.height,
+            width: context.width,
+            fit: BoxFit.cover,
+          ),
+          Positioned(
+            bottom: 20,
+            child: Container(
               width: context.width,
-              fit: BoxFit.cover,
-            ),
-
-            bottomNavigationBar: Container(
-              height: 100,
               alignment: Alignment.center,
               child: ElevatedButton(
-                child: const Text("set as Wallpaper"),
+                child: Text("set as Wallpaper".capitalize!),
                 onPressed: () {},
               ),
             ),
-          );
-        });
+          ),
+        ],
+      ),
+
+     
+    );
   }
 }
 
-class WallpaperViewController extends GetxController {
-  Photos? photo;
-  ApiState apiState = ApiState.loading;
-  String? error;
-
-  loadImage(int id) async {
-    await WallPaperRepository.getWallPaperById(id).then((value) {
-      photo = value;
-      apiState = ApiState.success;
-    }).onError((error, stackTrace) {
-      this.error = error.toString();
-      apiState = ApiState.error;
-    });
-    update();
-  }
-}

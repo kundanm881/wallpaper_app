@@ -3,6 +3,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wallpaper/ui/my_favs/my_favs.dart';
 
 class HomeDrawer extends StatelessWidget {
   const HomeDrawer({
@@ -27,7 +28,8 @@ class HomeDrawer extends StatelessWidget {
             title: Text("Favorites"),
             onTap: () => _checkDrawer(
               postCallBack: () {
-                print("object");
+                // print("object");
+                Get.to(() => MyFavPage());
               },
             ),
           ),

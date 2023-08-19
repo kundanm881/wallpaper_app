@@ -9,6 +9,7 @@ class FavImageModel {
   late String avgColor;
   late bool liked;
   late String alt;
+  late Src src;
 
   FavImageModel.fromJson(Map json) {
     id = json['id'];
@@ -19,7 +20,18 @@ class FavImageModel {
     photographerUrl = json['photographer_url'];
     photographerId = json['photographer_id'];
     avgColor = json['avg_color'];
-    liked = (json['liked'] == 1)?true:false;
+    liked = (json['liked'] == 1) ? true : false;
     alt = json['alt'];
+    src = Src.fromJson(json['src']);
+  }
+}
+
+class Src {
+  late int id;
+  late String portrait;
+
+  Src.fromJson(Map json) {
+    id = json['id'];
+    portrait = json['portrait'];
   }
 }
