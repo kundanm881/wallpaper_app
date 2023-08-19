@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 import '../../../database/model/images_model.dart';
@@ -8,7 +7,8 @@ class ImageCardTile extends StatelessWidget {
   const ImageCardTile({
     super.key,
     required this.item,
-    this.onClick, this.onFavClick,
+    this.onClick,
+    this.onFavClick,
   });
   final Function()? onClick;
   final Function()? onFavClick;
@@ -23,19 +23,21 @@ class ImageCardTile extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: Stack(
           children: [
-            Image.network(
-              item.src!.portrait!,
-              fit: BoxFit.cover,
+            Container(
+              height: 280,
+              width: double.maxFinite,
+              color: Colors.white,
+              child:  Image.network(
+                item.src!.portrait!,
+                fit: BoxFit.cover,
+              ),
             ),
             //
-            
+
             Positioned(
               bottom: 10,
               right: 10,
-              child: KFavBtn(
-                isFav: item.liked!,
-                onPressed: onFavClick
-              ),
+              child: KFavBtn(isFav: item.liked!, onPressed: onFavClick),
             )
           ],
         ),
