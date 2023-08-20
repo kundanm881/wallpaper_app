@@ -2,11 +2,16 @@
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:get/get.dart';
+import 'package:wallpaper/database/network/api/app_api.dart';
+import 'package:wallpaper/utils/apputils.dart';
+// import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart'
 
 import '../../controllers/fav_controller/fav_controller.dart';
 import '../../database/model/images_model.dart';
 import '../../database/sqlite/cache_manager_for_img.dart';
+
 class WallPagerView extends StatefulWidget {
   const WallPagerView({
     super.key,
@@ -125,7 +130,15 @@ class _WallPagerViewState extends State<WallPagerView> {
               alignment: Alignment.center,
               child: ElevatedButton(
                 child: Text("set as Wallpaper".capitalize!),
-                onPressed: () {},
+                onPressed: () async {
+                  await AppApi2().downloadImage(url: widget.photo.src!.portrait!).then((value) async {
+                    print(value);
+                  var res = await WallpaperManager.setWallpaperFromFile(value.path, WallpaperManager.HOME_SCREEN);
+                  print(res);
+                  }).onError((error, stackTrace){
+                    AppUtils.showSnackBar(message: error.toString());
+                  });
+                },
               ),
             ),
           ),

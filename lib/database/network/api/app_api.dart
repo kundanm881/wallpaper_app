@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:wallpaper/database/network/api/base_api.dart';
 import 'package:http/http.dart' as http;
 
@@ -40,7 +43,7 @@ class AppApi extends BaseApi {
 }
 
 class AppApi2 extends BaseApi {
-  Dio dio = Dio();
+  Dio _dio = Dio();
 
   @override
   Future get({required String url, Map<String, String>? parems}) async {
@@ -58,15 +61,48 @@ class AppApi2 extends BaseApi {
       finalUri = newUrl;
     }
     try {
-     Response response = await dio.getUri(finalUri, options: Options(headers: headers)).timeout(Duration(seconds: 10));
+      Response response = await _dio
+          .getUri(finalUri, options: Options(headers: headers))
+          .timeout(Duration(seconds: 10));
 
-     if(response.statusCode == 200){
-       return response.data;
-     }else{
-       throw response.statusMessage.toString();
-     }
+      if (response.statusCode == 200) {
+        return response.data;
+      } else {
+        throw response.statusMessage.toString();
+      }
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // download image
+  Future<File> downloadImage({required String url, void Function(int count, int total)? onReceiveProgress}) async {
+    final filePath = await getExternalStorageDirectory();
+
+    Directory wallpapersDir =
+        Directory(join(filePath?.path ?? "", "wallpapers"));
+
+    if (wallpapersDir.existsSync() == false) {
+      await wallpapersDir.create();
+    }
+
+    final getImageName = url.split("?").first.split("/").last;
+
+    final savePath = join(wallpapersDir.path, getImageName);
+
+
+    if(File(savePath).existsSync() == true){
+      return File(savePath) ;
+    }else{
+     return await _dio.download(url, savePath,onReceiveProgress: onReceiveProgress).then((value){
+        if(value.statusCode == 200){
+          return File(savePath);
+        }else{
+          throw value.statusMessage!;
+        }
+      }).onError((error, stackTrace){
+        throw error!;
+      });
     }
   }
 }
