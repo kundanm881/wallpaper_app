@@ -1,3 +1,4 @@
+
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
@@ -6,7 +7,7 @@ import 'package:wallpaper/controllers/controllers_binding.dart';
 import 'package:wallpaper/style/app_theme.dart';
 import 'package:wallpaper/ui/home_page/home_page.dart';
 
-void main()  {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MyApp());
 }
