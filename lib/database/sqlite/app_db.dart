@@ -85,7 +85,7 @@ class AppDb {
         "photographer": photo.photographer,
         "photographer_url": photo.photographerUrl,
         "photographer_id": photo.photographerId,
-        "avg_color": photo.avgColor,
+        "avg_color": photo.avgColor.toString(),
         "liked": (photo.liked == true) ? 1 : 0,
         "alt": photo.alt
       },

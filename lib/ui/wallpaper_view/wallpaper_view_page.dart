@@ -80,7 +80,7 @@ class _WallPagerViewState extends State<WallPagerView> {
           IconButton(
             onPressed: () {
               Get.showSnackbar(GetSnackBar(
-                message: "Comming soon",
+                message: "Coming soon",
                 duration: Duration(seconds: 2),
                 snackPosition: SnackPosition.TOP,
               ),);
@@ -98,7 +98,7 @@ class _WallPagerViewState extends State<WallPagerView> {
             color: Color(
                 int.parse(widget.photo.avgColor!.replaceAll("#", "0xff"))),
             child:  Hero(
-              tag: "img",
+              tag: widget.photo.src!.portrait!,
               child: Image(
                 image: CachedNetworkImageProvider(
                   widget.photo.src!.portrait!,
@@ -118,12 +118,6 @@ class _WallPagerViewState extends State<WallPagerView> {
             ),
           ),
 
-          // Image.network(
-          //   widget.photo.src!.portrait!,
-          //   height: context.height,
-          //   width: context.width,
-          //   fit: BoxFit.cover,
-          // ),
           Positioned(
             bottom: 20,
             child: Container(

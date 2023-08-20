@@ -12,6 +12,7 @@ class FavImageModel {
   late Src src;
 
   FavImageModel.fromJson(Map json) {
+
     id = json['id'];
     width = json['width'];
     height = json['height'];

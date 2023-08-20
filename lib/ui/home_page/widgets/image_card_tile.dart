@@ -22,7 +22,17 @@ class ImageCardTile extends StatefulWidget {
   State<ImageCardTile> createState() => _ImageCardTileState();
 }
 
-class _ImageCardTileState extends State<ImageCardTile> {
+class _ImageCardTileState extends State<ImageCardTile>
+    with TickerProviderStateMixin {
+  // late Animation animation;
+  // Tween<double> saleTween = Tween<double>();
+
+  @override
+  void initState() {
+    // animation = A
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -37,7 +47,7 @@ class _ImageCardTileState extends State<ImageCardTile> {
               color: Color(
                   int.parse(widget.item.avgColor!.replaceAll("#", "0xff"))),
               child: Hero(
-                tag: "img",
+                tag: widget.item.src!.portrait!,
                 child: Image(
                   image: CachedNetworkImageProvider(
                     widget.item.src!.portrait!,

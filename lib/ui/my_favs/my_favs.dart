@@ -35,7 +35,6 @@ class _MyFavPageState extends State<MyFavPage> {
       body: GetBuilder(
         init: favController,
         builder: (controller) {
-
           if (controller.favImages == null || controller.favImages!.isEmpty) {
             return Center(child: Text("No favorites to show"));
           } else {
@@ -53,7 +52,7 @@ class _MyFavPageState extends State<MyFavPage> {
                   width: item.width,
                   height: item.height,
                   url: item.url,
-                  avgColor: item.alt,
+                  avgColor: item.avgColor,
                   photographer: item.photographer,
                   photographerId: item.photographerId,
                   photographerUrl: item.photographerUrl,
@@ -62,12 +61,11 @@ class _MyFavPageState extends State<MyFavPage> {
                   alt: item.alt,
                 );
 
+
                 return ImageCardTile(
                   item: photo,
                   onClick: () async {
-                    Get.to(() => WallPagerView(
-                          photo: photo,
-                        ));
+                    Get.to(() => WallPagerView(photo: photo));
                   },
                   onFavClick: () async {
                     controller.removeImage(id: item.id);
