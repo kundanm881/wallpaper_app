@@ -1,10 +1,12 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controllers/fav_controller/fav_controller.dart';
 import '../../database/model/images_model.dart';
+import '../../database/sqlite/cache_manager_for_img.dart';
 class WallPagerView extends StatefulWidget {
   const WallPagerView({
     super.key,
@@ -89,12 +91,39 @@ class _WallPagerViewState extends State<WallPagerView> {
       ),
       body: Stack(
         children: [
-          Image.network(
-            widget.photo.src!.portrait!,
-            height: context.height,
-            width: context.width,
-            fit: BoxFit.cover,
+
+          Container(
+              height: context.height,
+              width: context.width,
+            color: Color(
+                int.parse(widget.photo.avgColor!.replaceAll("#", "0xff"))),
+            child:  Hero(
+              tag: "img",
+              child: Image(
+                image: CachedNetworkImageProvider(
+                  widget.photo.src!.portrait!,
+                  cacheManager: cacheManager(widget.photo.src!.portrait!),
+                ),
+                fit: BoxFit.cover,
+                loadingBuilder: (context, child, loadingProgress) {
+                  return (loadingProgress != null)
+                      ? Center(
+                    child: CircularProgressIndicator(
+                        value: loadingProgress.cumulativeBytesLoaded /
+                            loadingProgress.expectedTotalBytes!),
+                  )
+                      : child;
+                },
+              ),
+            ),
           ),
+
+          // Image.network(
+          //   widget.photo.src!.portrait!,
+          //   height: context.height,
+          //   width: context.width,
+          //   fit: BoxFit.cover,
+          // ),
           Positioned(
             bottom: 20,
             child: Container(

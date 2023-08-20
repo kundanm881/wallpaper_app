@@ -1,24 +1,32 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../database/model/images_model.dart';
+import '../../../database/sqlite/cache_manager_for_img.dart';
 import '../../../widgets/btns/k_fav_btn.dart';
 
-class ImageCardTile extends StatelessWidget {
+class ImageCardTile extends StatefulWidget {
   const ImageCardTile({
     super.key,
     required this.item,
     this.onClick,
     this.onFavClick,
   });
+
   final Function()? onClick;
   final Function()? onFavClick;
 
   final Photos item;
 
   @override
+  State<ImageCardTile> createState() => _ImageCardTileState();
+}
+
+class _ImageCardTileState extends State<ImageCardTile> {
+  @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onClick,
+      onTap: widget.onClick,
       child: Card(
         clipBehavior: Clip.hardEdge,
         child: Stack(
@@ -26,10 +34,26 @@ class ImageCardTile extends StatelessWidget {
             Container(
               height: 280,
               width: double.maxFinite,
-              color: Colors.white,
-              child:  Image.network(
-                item.src!.portrait!,
-                fit: BoxFit.cover,
+              color: Color(
+                  int.parse(widget.item.avgColor!.replaceAll("#", "0xff"))),
+              child: Hero(
+                tag: "img",
+                child: Image(
+                  image: CachedNetworkImageProvider(
+                    widget.item.src!.portrait!,
+                    cacheManager: cacheManager(widget.item.src!.portrait!),
+                  ),
+                  fit: BoxFit.cover,
+                  loadingBuilder: (context, child, loadingProgress) {
+                    return (loadingProgress != null)
+                        ? Center(
+                            child: CircularProgressIndicator(
+                                value: loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!),
+                          )
+                        : child;
+                  },
+                ),
               ),
             ),
             //
@@ -37,7 +61,8 @@ class ImageCardTile extends StatelessWidget {
             Positioned(
               bottom: 10,
               right: 10,
-              child: KFavBtn(isFav: item.liked!, onPressed: onFavClick),
+              child: KFavBtn(
+                  isFav: widget.item.liked!, onPressed: widget.onFavClick),
             )
           ],
         ),

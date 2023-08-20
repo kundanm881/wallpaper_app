@@ -35,46 +35,47 @@ class _MyFavPageState extends State<MyFavPage> {
       body: GetBuilder(
         init: favController,
         builder: (controller) {
-          // if (controller.apiState == ApiState.loading) {
-          //   return Center(child: CircularProgressIndicator());
-          // }
-          // if (controller.apiState == ApiState.error) {
-          //   return Center(child: Text(controller.error.toString()));
-          // }
-          return GridView.builder(
-            padding: EdgeInsets.all(8),
-            itemCount: controller.favImages!.length,
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              mainAxisExtent: 280,
-            ),
-            itemBuilder: (context, index) {
-              final item = controller.favImages![index];
-              final Photos photo = Photos(
-                id: item.id,
-                width: item.width,
-                height: item.height,
-                url: item.url,
-                avgColor: item.alt,
-                photographer: item.photographer,
-                photographerId: item.photographerId,
-                photographerUrl: item.photographerUrl,
-                src: Src(portrait: item.src.portrait),
-                liked: item.liked,
-                alt: item.alt,
-              );
 
-              return ImageCardTile(
-                item: photo,
-                onClick: () async {
-                  Get.to(() => WallPagerView(photo: photo,));
-                },
-                onFavClick: () async {
-                  controller.removeImage(id: item.id);
-                },
-              );
-            },
-          );
+          if (controller.favImages == null || controller.favImages!.isEmpty) {
+            return Center(child: Text("No favorites to show"));
+          } else {
+            return GridView.builder(
+              padding: EdgeInsets.all(8),
+              itemCount: controller.favImages!.length,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                mainAxisExtent: 280,
+              ),
+              itemBuilder: (context, index) {
+                final item = controller.favImages![index];
+                final Photos photo = Photos(
+                  id: item.id,
+                  width: item.width,
+                  height: item.height,
+                  url: item.url,
+                  avgColor: item.alt,
+                  photographer: item.photographer,
+                  photographerId: item.photographerId,
+                  photographerUrl: item.photographerUrl,
+                  src: Src(portrait: item.src.portrait),
+                  liked: item.liked,
+                  alt: item.alt,
+                );
+
+                return ImageCardTile(
+                  item: photo,
+                  onClick: () async {
+                    Get.to(() => WallPagerView(
+                          photo: photo,
+                        ));
+                  },
+                  onFavClick: () async {
+                    controller.removeImage(id: item.id);
+                  },
+                );
+              },
+            );
+          }
         },
       ),
     );
